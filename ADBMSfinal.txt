@@ -1,0 +1,159 @@
+1)ass1  CRUD operation 
+use customers
+db.customers.insertOne({name: "John", email: "john@example.com"})
+
+db.customers.insertMany([{name: "Alice", email: "alice@example.com"},{name: "Bob", email: "bob@example.com"}])
+db.customers.find()
+db.customers.updateOne({ name: "John" },{ $set: { email: "newemail@example.com" })
+
+db.customers.updateMany({ name: "Alice" },{ $set: { email: "updatedemail@example.com" } })
+db.customers.deleteOne({ name: "Bob" })
+db.customers.deleteMany({ name: "Alice" })
+
+
+2)ass2  conditional and/or/not
+db.adbms.find({ category: "sports" })
+
+db.adbms.find({ $or: [{ category: "Sports" }, { price: { $lt: 50 } } ]})
+db.cheat.find({ $and: [{ category: "Sports" }, { price: { $lt: 50 } } ]})
+db.cheat.find({ category: { $ne: "Clothing" } })
+
+
+3)ass3  mapReduce and aggregation
+use demo
+db.demo.insertMany([{item:'pasta',amt:40,cust:'pratik'},{item:'milk',amt:60,cust:'krish'},{item:'pizza',amt:150,cust:'hari'},{item:'pasta',amt:40,cust:'sara'},{item:'pizza',amt:150,cust:'amit'}])
+db.demo.aggregate([{$group:{_id:"$item",total:{$sum:"$amt"}}}])
+db.demo.aggregate([{$group:{_id:"$item",total:{$sum:"1"}}}])
+db.demo.aggregate([{$group:{_id:"$item",total:{$sum:1}}}])
+db.demo.aggregate([{$group:{_id:"$item",total:{$avg:"$amt"}}}])
+
+use aggre
+db.aggre.insertMany([{name:"pratik",marks:40,age:20},{name:"sachin",marks:50,age:20},{name:"virat",marks:30,age:18},{name:"dhoni",marks:50,age:21},{name:"AK",marks:60,age:21}])
+db.aggre.find()
+var mapf=function(){emit(this.age,this.marks)};
+var reducef=function(key,values){return Array.sum(values);};
+db.aggre.mapReduce(mapf,reducef,{out:"res"})
+db.res.find()
+//Avg
+var mapf=function(){emit(this.age,this.marks)}
+var reducef=function(key,values){return Array.avg(values)}
+db.aggre.mapReduce(mapf,reducef,{out:"res2"})
+db.res2.find()
+
+
+4)ass4 indexes 
+use info
+db.info.insertMany([{name:"rushi",marks:20,age:20},{name:"sachin",marks:40,age:20},{name:"ajinkya",marks:40,age:19}])
+db.info.find()
+ db.info.createIndex({age:19})
+ db.info.insertMany([{cid:1,name:"rushi",age:19},{cid:2,name:"krishna"}]) db.info.insertMany([{cid:1,name:"rushi",age:19},{cid:2,name:"krishna",age:19},{cid:3,name:"ajinkya",age:19},{cid:4,name:"sachin",age:56},{cid:5,name:"shubh",age:60}])
+ db.info.createIndex({cid:-1,name:1})
+db.info.getIndexes()
+db.info.dropIndex({cid:1})
+db.info.getIndexes()
+db.info.dropIndex({cid:-1,name:1})
+db.info.getIndexes()
+db.info.find()
+db.info.createIndex({cid:1},{unique:true})
+db.info.insert({cid:1,name:"sunny"})
+db.info.insert({cid:1,name:"honey"})
+
+
+5)
+// Create the fact collection
+db.fact_table.createIndex({
+  customer_id: 1,
+  product_id: 1,
+  date_id: 1
+})
+
+// Create the dimension collections
+db.dimension_customer.createIndex({
+  customer_id: 1
+})
+
+db.dimension_product.createIndex({
+  product_id: 1
+})
+
+db.dimension_date.createIndex({
+  date_id: 1
+})
+
+// Insert some data into the fact collection
+db.fact_table.insert([
+  {
+    customer_id: 1,
+    product_id: 2,
+    date_id: 3,
+    sales_amount: 100
+  },
+  {
+    customer_id: 2,
+    product_id: 1,
+    date_id: 4,
+    sales_amount: 200
+  }
+])
+
+// Insert some data into the dimension collections
+db.dimension_customer.insert([
+  {
+    customer_id: 1,
+    customer_name: "John Doe"
+  },
+  {
+    customer_id: 2,
+    customer_name: "Jane Doe"
+  }
+])
+
+db.dimension_product.insert([
+  {
+    product_id: 1,
+    product_name: "Product A"
+  },
+  {
+    product_id: 2,
+    product_name: "Product B"
+  }
+])
+
+db.dimension_date.insert([
+  {
+    date_id: 3,
+    date_time: new Date("2023-08-04T00:00:00.000Z"),
+    day_of_week: "Friday",
+    month: "August",
+    year: 2023
+  },
+  {
+    date_id: 4,
+    date_time: new Date("2023-08-05T00:00:00.000Z"),
+    day_of_week: "Saturday",
+    month: "August",
+    year: 2023
+  }
+])
+This code will create a star schema with three collections:
+
+fact_table: The fact collection contains the quantitative data, such as sales amount.
+dimension_customer: The dimension collection contains the descriptive data about customers.
+dimension_product: The dimension collection contains the descriptive data about products.
+dimension_date: The dimension collection contains the descriptive data about dates.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
